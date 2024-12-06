@@ -337,7 +337,9 @@ add_treeMap = function(x, las, ...){
   h = 1.3
   if(hasAttribute(las, 'tree_map')){
     if(hasField(las, 'TreePosition')){
-      las %>% bringToOrigin(x) %>% las2xyz %>% rgl.points(...)
+      #las %>% bringToOrigin(x) %>% las2xyz %>% rgl.points(...)
+      #In rgl.points(., ...) : 'rgl.points' é obsoleto. Use 'points3d' em seu lugar. 06/12/2024
+      las %>% bringToOrigin(x) %>% las2xyz %>% points3d(...)
       return(NULL)
     }
     h = mean(las$Z)
@@ -359,7 +361,10 @@ add_treePoints = function(x, las, color_func=pastel.colors, ...){
   las = bringToOrigin(las, x)
   colors = las$TreeID %>% unique %>% length %>% color_func
   colors = set.colors(las$TreeID, colors)
-  las@data %$% rgl.points(X,Y,Z,color=colors,...)
+  #las@data %$% rgl.points(X,Y,Z,color=colors,...)
+  #In rgl.points(X, Y, Z, color = colors, ...) : 'rgl.points' é obsoleto. Use 'points3d' em seu lugar. 06/12/2024
+  las@data %$% points3d(X,Y,Z,color=colors,...)
+  
 }
 
 #' @rdname tlsPlot
