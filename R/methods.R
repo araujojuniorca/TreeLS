@@ -539,11 +539,17 @@ tlsNormalize = function(las, min_res=.25, keep_ground=TRUE){
     las = classify_ground(las, csf(class_threshold = 0.05, cloth_resolution = 0.05), last_returns = F)
   }
 
-  res = area(las) / nrow(las@data[Classification == 2])
+  #res = area(las) / nrow(las@data[Classification == 2])
+  #res = ifelse(res < min_res, min_res, res)
+  #grid = las %>% extent %>% raster
+  #res(grid) = res
+  # replaced by Carlos on 06/12/2024 as suggested by https://github.com/tiagodc/TreeLS/issues/55
+  res = lidR::st_area(las) / length(las@data[Classification == 2])
   res = ifelse(res < min_res, min_res, res)
-
-  grid = las %>% extent %>% raster
-  res(grid) = res
+  ext = lidR::ext(las)
+  grid = terra::rast(ext, res=res)
+  
+  
 
   dtm = grid_terrain(las, res = grid, algorithm = knnidw(), full_raster=TRUE)
   las = normalize_height(las, dtm, na.rm=TRUE, Wdegenerated = TRUE)
